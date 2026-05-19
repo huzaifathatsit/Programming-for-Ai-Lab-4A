@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mishkat Al-Hadith: AI RAG Companion & Parallel Corpus Explorer</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Cinzel:wght@500;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Stylesheet Link -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Islamic Decorative Top Border -->
+    <div class="decorative-top-border"></div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <div class="lantern-icon">
+                    <i class="fa-solid fa-mosque"></i>
+                </div>
+                <div class="header-text">
+                    <h1 class="app-title">Mishkat Al-Hadith</h1>
+                    <p class="app-subtitle">Leeds-King Saud University Parallel Corpus Explorer & RAG Chatbot</p>
+                </div>
+            </div>
+            <!-- Navigation Tabs -->
+            <nav class="app-nav">
+                <button id="nav-chat" class="nav-btn active" onclick="switchTab('chat')">
+                    <i class="fa-solid fa-comments"></i> AI Chat Companion
+                </button>
+                <button id="nav-library" class="nav-btn" onclick="switchTab('library')">
+                    <i class="fa-solid fa-book-open"></i> Corpus Browser
+                </button>
+            </nav>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="app-main">
+            
+            <!-- Chat Section -->
+            <section id="chat-section" class="tab-content active">
+                <div class="chat-container">
+                    <!-- Welcome & Quick Topics Panel -->
+                    <div class="chat-sidebar">
+                        <div class="sidebar-card">
+                            <h3><i class="fa-solid fa-feather-pointed"></i> RAG AI Search</h3>
+                            <p>Ask a question or enter a keyword (e.g. <strong>"Dajjal"</strong> or <strong>"Wudu"</strong>). The AI will search the 34,088 Hadith records, return the most similar matches, translate them to Urdu, and present a detailed scholarly explanation.</p>
+                        </div>
+                        <div class="sidebar-card">
+                            <h3><i class="fa-solid fa-star"></i> Suggested Topics</h3>
+                            <div class="topic-suggestions">
+                                <button class="suggestion-tag" onclick="useQuery('Dajjal')">Dajjal (Antichrist)</button>
+                                <button class="suggestion-tag" onclick="useQuery('ablution washing three times')">Washing Wudu 3 Times</button>
+                                <button class="suggestion-tag" onclick="useQuery('Ramadan Gabriel Quran')">Ramadan & Gabriel</button>
+                                <button class="suggestion-tag" onclick="useQuery('two rak\'ahs at dawn')">Dawn Prayer (Fajr)</button>
+                                <button class="suggestion-tag" onclick="useQuery('leaves his bed then returns')">Sleeping Etiquette</button>
+                                <button class="suggestion-tag" onclick="useQuery('seeking knowledge')">Seeking Knowledge</button>
+                                <button class="suggestion-tag" onclick="useQuery('parents mother father')">Kindness to Parents</button>
+                                <button class="suggestion-tag" onclick="useQuery('charity sadaqah')">Charity & Zakat</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Feed -->
+                    <div class="chat-feed-container">
+                        <div id="chat-messages" class="chat-messages-area">
+                            <!-- Bot Welcome Message -->
+                            <div class="message system-message">
+                                <div class="message-avatar"><i class="fa-solid fa-dharmachakra"></i></div>
+                                <div class="message-content">
+                                    <p>Assalamu Alaykum! I am your Mishkat AI Companion. Enter any search term or religious query, and I will search the entire Leeds-King Saud University Parallel Hadith Corpus to retrieve relevant narrations in Arabic, English, and Urdu, complete with dynamic scholarly commentary.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Loading Indicator -->
+                        <div id="chat-loading" class="chat-loader hidden">
+                            <div class="pulse-ring"></div>
+                            <span>Retrieving and translating similar Hadith from Corpus...</span>
+                        </div>
+
+                        <!-- Chat Input Form -->
+                        <form id="chat-form" class="chat-input-bar" onsubmit="handleChatSubmit(event)">
+                            <input type="text" id="chat-input" placeholder="Ask about a topic (e.g. Wudu, Dajjal, Charity)..." required autocomplete="off">
+                            <button type="submit" id="chat-submit-btn">
+                                <span>Search</span> <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Library Section -->
+            <section id="library-section" class="tab-content">
+                <div class="library-container">
+                    <!-- Sidebar Book Selector -->
+                    <aside class="library-sidebar">
+                        <h3 class="sidebar-title"><i class="fa-solid fa-filter"></i> Collectors</h3>
+                        <div id="library-book-tabs" class="book-tabs-list">
+                            <!-- Dynamic Book Tabs will load here -->
+                            <div class="sidebar-loader">Loading collections...</div>
+                        </div>
+                    </aside>
+
+                    <!-- Main Library Explorer -->
+                    <div class="library-explorer">
+                        <!-- Search and Controls Panel -->
+                        <div class="library-controls">
+                            <div class="search-box-wrapper">
+                                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                                <input type="text" id="library-search" placeholder="Search Hadith text, chapters, section numbers..." oninput="handleLibrarySearch()">
+                            </div>
+                            <div class="results-meta">
+                                <span id="library-count-text">Found: 0 Hadiths</span>
+                            </div>
+                        </div>
+
+                        <!-- Library Loading Indicator -->
+                        <div id="library-loading" class="library-loader-overlay hidden">
+                            <div class="spinner"></div>
+                            <p>Querying parallel database...</p>
+                        </div>
+
+                        <!-- Library Cards Grid -->
+                        <div id="library-results" class="library-grid">
+                            <!-- Dynamic Hadith Cards will load here -->
+                            <div class="empty-state">
+                                <i class="fa-solid fa-book-open"></i>
+                                <p>Select a book or type a query to browse the Leeds Parallel Hadith Corpus.</p>
+                            </div>
+                        </div>
+
+                        <!-- Pagination Controls -->
+                        <div id="library-pagination" class="pagination-bar">
+                            <!-- Dynamic Pagination links -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>&copy; 2026 Mishkat Al-Hadith. Built using the Leeds-King Saud University Parallel Bilingual Hadith Corpus (34,088 records).</p>
+            <p class="footer-note">Developed with PyTorch, SentenceTransformers (MiniLM-L6), FAISS Indexing, and Flask.</p>
+        </footer>
+    </div>
+
+    <!-- Script Link -->
+    <script src="script.js"></script>
+</body>
+</html>
